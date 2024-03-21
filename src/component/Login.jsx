@@ -1,41 +1,33 @@
-import { useState } from "react";
+// here all the work done by formik and yup.Yup file file for this component in Schima folder which file name is index.jsx
+
 // import { supabase } from "../SupabaseClient";
+import { useFormik } from "formik";
+import { signUpSchema } from "../schemas";
+import { toast } from "react-toastify";
+
+const initialValues = {
+  first_name: "",
+  last_name: "",
+  email: "",
+  password: "",
+  confirm_password: "",
+};
+
+const notify = () => toast.success("Successfully Submitted Your Data!");
 
 const Login = () => {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
+  // formik validitation
 
-  const handleCreateAccount = async (e) => {
-    e.preventDefault();
-
-    // try {
-    //   const { user, error } = await supabase.auth.signUp({
-    //     email,
-    //     password,
-    //     firstName,
-    //     lastName,
-    //   });
-    //   if (error) {
-    //     throw error;
-    //   }
-    //   console.log("User signed up successfully:", user);
-    // } catch (error) {
-    //   console.error("Error signing up:", error.message);
-    // } finally {
-    //   setLoading(false);
-    // }
-
-    try {
-      const user = { email, password, firstName, lastName };
-      console.log(user);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const { values, errors, handleBlur, handleChange, handleSubmit } = useFormik({
+    initialValues: initialValues,
+    validationSchema: signUpSchema,
+    onSubmit: (values, action) => {
+      console.log(values);
+      action.resetForm();
+      notify();
+    },
+  });
+  console.log(errors);
 
   return (
     <div className="min-h-screen w-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -44,7 +36,7 @@ const Login = () => {
           <h2 className="text-center text-3xl font-extrabold text-gray-900">
             Create an account
           </h2>
-          <form onSubmit={handleCreateAccount} className="mt-8 space-y-6">
+          <form onSubmit={handleSubmit} className="mt-8 space-y-6">
             <input type="hidden" name="remember" value="true" />
             <div className="space-y-4">
               <div>
@@ -57,11 +49,13 @@ const Login = () => {
                   type="text"
                   autoComplete="given-name"
                   required
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
+                  value={values.first_name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="First Name"
                 />
+                {<p className="text-red-300">{errors.first_name}</p>}
               </div>
               <div>
                 <label htmlFor="last_name" className="sr-only">
@@ -73,11 +67,13 @@ const Login = () => {
                   type="text"
                   autoComplete="family-name"
                   required
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
+                  value={values.last_name}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Last Name"
                 />
+                {<p className="text-red-300">{errors.last_name}</p>}
               </div>
               <div>
                 <label htmlFor="email" className="sr-only">
@@ -88,11 +84,13 @@ const Login = () => {
                   type="email"
                   autoComplete="email"
                   required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={values.email}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Email address"
                 />
+                {<p className="text-red-300">{errors.email}</p>}
               </div>
               <div>
                 <label htmlFor="password" className="sr-only">
@@ -103,11 +101,13 @@ const Login = () => {
                   type="password"
                   autoComplete="new-password"
                   required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={values.password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Password"
                 />
+                {<p className="text-red-300">{errors.password}</p>}
               </div>
               <div>
                 <label htmlFor="confirm_password" className="sr-only">
@@ -119,21 +119,22 @@ const Login = () => {
                   type="password"
                   autoComplete="new-password"
                   required
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  value={values.confirm_password}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
                   className="appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                   placeholder="Confirm Password"
                 />
+                {<p className="text-red-300">{errors.confirm_password}</p>}
               </div>
             </div>
 
             <div>
               <button
                 type="submit"
-                disabled={loading}
                 className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                {loading ? "Creating Account..." : "Create Account"}
+                Create Account
               </button>
             </div>
           </form>
